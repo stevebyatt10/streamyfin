@@ -40,6 +40,7 @@ import { useTVItemActionModal } from "@/hooks/useTVItemActionModal";
 import { apiAtom, userAtom } from "@/providers/JellyfinProvider";
 import { useSettings } from "@/utils/atoms/settings";
 import { getBackdropUrl } from "@/utils/jellyfin/image/getBackdropUrl";
+import { updateTopShelfCache } from "@/utils/topshelf/cache";
 
 const HORIZONTAL_PADDING = 60;
 const TOP_PADDING = 100;
@@ -256,6 +257,18 @@ export const Home = () => {
     staleTime: 60 * 1000,
     refetchInterval: 60 * 1000,
   });
+
+  useEffect(() => {
+    updateTopShelfCache({
+      api,
+      sections: [
+        {
+          title: t("home.continue_and_next_up"),
+          items: heroItems,
+        },
+      ],
+    });
+  }, [api, heroItems, t]);
 
   const userViews = useMemo(
     () => data?.filter((l) => !settings?.hiddenLibraries?.includes(l.Id!)),
